@@ -56,5 +56,5 @@
     "react-app-rewired": "^2.2.1",
     "webpack": "^5.93.0"
   },
-  "proxy": "https://back-end-riss.onrender.com"
+  "proxy": "https://back-end-2-oozr.onrender.com"
 }
