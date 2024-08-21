@@ -8,7 +8,6 @@ export const loginUser = async (data) => {
 }
 
 export const signupUser = async (data) => {
-    console.log('API URL:', process.env.REACT_APP_API_URL); // Kiểm tra URL
     const res = await axios.post(`${process.env.REACT_APP_API_URL}/user/sign-up`, data)
     return res.data
 }
