@@ -25,7 +25,6 @@ const OrderAdmin = () => {
     return res
   }
 
-
   const queryOrder = useQuery({ queryKey: ['orders'], queryFn: getAllOrder })
   const { isLoading: isLoadingOrders, data: orders } = queryOrder
 

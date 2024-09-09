@@ -1,5 +1,6 @@
 import AdminPage from "../pages/AdminPage/AdminPage";
 import DetailsOrderPage from "../pages/DetailsOrderPage/DetailsOrderPage";
+import ForgotPasswordPage from "../pages/ForgotPasswordPage/ForgotPasswordPage";
 import HomePage from "../pages/Homepage/HomePage";
 import MyOrderPage from "../pages/MyOrder/MyOder";
 import NotFoundPage from "../pages/NotFoundPage/NotFoundPage";
@@ -62,6 +63,11 @@ export const routes = [
     {
         path: '/sign-up',
         page: SignUpPage,
+        isShowHeader: false
+    },
+    {
+        path: '/forgot-password',
+        page: ForgotPasswordPage,
         isShowHeader: false
     },
     {

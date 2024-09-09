@@ -104,14 +104,12 @@ const OrderPage = () => {
 
   const priceDiscountMemo = useMemo(() => {
     const result = order?.orderItemsSlected?.reduce((total, cur) => {
-      const totalDiscount = cur.discount ? cur.discount : 0
-      return total + (priceMemo * (totalDiscount  * cur.amount) / 100)
-    },0)
-    if(Number(result)){
-      return result
-    }
-    return 0
-  },[order])
+      const discountValue = cur.discount ? cur.discount : 0;
+      return total + (cur.price * (discountValue * cur.amount) / 100);
+    }, 0);
+    return Number(result) ? result : 0; 
+  }, [order]);
+  
 
   const diliveryPriceMemo = useMemo(() => {
     if(priceMemo >= 20000 && priceMemo < 500000){
@@ -136,7 +134,7 @@ const OrderPage = () => {
   const handleAddCard = () => {
     if(!order?.orderItemsSlected?.length) {
       message.error('Vui lòng chọn sản phẩm')
-    }else if(!user?.phone || !user.address || !user.name || !user.city) {
+    }else if(!user?.phone || !user.address || !user.name ) {
       setIsOpenModalUpdateInfo(true)
     }else {
       navigate('/payment')
@@ -321,13 +319,6 @@ const OrderPage = () => {
               rules={[{ required: true, message: 'Please input your name!' }]}
             >
               <InputComponent value={stateUserDetails['name']} onChange={handleOnchangeDetails} name="name" />
-            </Form.Item>
-            <Form.Item
-              label="City"
-              name="city"
-              rules={[{ required: true, message: 'Please input your city!' }]}
-            >
-              <InputComponent value={stateUserDetails['city']} onChange={handleOnchangeDetails} name="city" />
             </Form.Item>
             <Form.Item
               label="Phone"

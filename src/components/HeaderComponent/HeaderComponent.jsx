@@ -1,4 +1,3 @@
-
 import { Badge, Button, Col, Popover } from 'antd'
 import React from 'react'
 import { WrapperContentPopup, WrapperHeader, WrapperHeaderAccout, WrapperTextHeader, WrapperTextHeaderSmall } from './style'

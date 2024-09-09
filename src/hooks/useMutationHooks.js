@@ -1,8 +1,5 @@
-import { useMutation } from "@tanstack/react-query"
+import { useMutation } from '@tanstack/react-query';
 
-export const useMutationHooks = (fnCallback) => {
-    const mutation = useMutation({
-        mutationFn: fnCallback
-      })
-      return mutation
-}
+export const useMutationHooks = (mutationFn) => {
+  return useMutation(mutationFn);
+};

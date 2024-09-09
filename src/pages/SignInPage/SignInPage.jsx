@@ -1,115 +1,106 @@
-import React, { useEffect } from 'react'
-import ButtonComponent from '../../components/ButtonComponent/ButtonComponent'
-import InputForm from '../../components/InputForm/InputForm'
-import { WrapperContainerLeft, WrapperContainerRight, WrapperTextLight } from './style'
-import imageLogo from '../../assets/images/imagesmall.webp'
-import { Image } from 'antd'
-import { EyeFilled, EyeInvisibleFilled } from '@ant-design/icons'
-import { useState } from 'react'
-import { useLocation, useNavigate } from 'react-router-dom'
-import * as UserService from '../../services/UserService'
-import { useMutationHooks } from '../../hooks/useMutationHooks'
-import Loading from '../../components/LoadingComponent/Loading'
-import { jwtDecode } from "jwt-decode";
-import { useDispatch, useSelector } from 'react-redux'
-import { updateUser } from '../../redux/slides/userSlide'
+import React, { useEffect, useState } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { Image } from 'antd';
+import { EyeFilled, EyeInvisibleFilled } from '@ant-design/icons';
+import ButtonComponent from '../../components/ButtonComponent/ButtonComponent';
+import InputForm from '../../components/InputForm/InputForm';
+import Loading from '../../components/LoadingComponent/Loading';
+import { WrapperContainerLeft, WrapperContainerRight, WrapperTextLight } from './style';
+import imageLogo from '../../assets/images/anhnen.webp';
+import * as UserService from '../../services/UserService';
+import { useMutationHooks } from '../../hooks/useMutationHooks';
+import { updateUser } from '../../redux/slides/userSlide';
+import {jwtDecode} from 'jwt-decode';  // Remove the extra curly braces
+import * as message from '../../components/Message/Message';
 
 const SignInPage = () => {
-  const [isShowPassword, setIsShowPassword] = useState(false)
-  const location = useLocation()
+  const [isShowPassword, setIsShowPassword] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');  // State to store error message from server
+  const navigate = useNavigate();
+  const location = useLocation();
   const dispatch = useDispatch();
-  const user  = useSelector((state) => state.user)
 
-  const navigate = useNavigate()
-
-  const mutation = useMutationHooks(
-    data => UserService.loginUser(data)
-  )
-  const { data, isLoading, isSuccess } = mutation
+  const mutation = useMutationHooks(data => UserService.loginUser(data));
+  const { data, isLoading, isSuccess, isError, error } = mutation;  // Get `error` from mutation
+  console.log("data", data);
 
   useEffect(() => {
     if (isSuccess) {
-      if(location?.state) {
-        navigate(location?.state)
-      }else {
-        navigate('/')
-      }
-      localStorage.setItem('access_token', JSON.stringify(data?.access_token))
-      localStorage.setItem('refresh_token', JSON.stringify(data?.refresh_token))
+      const redirectPath = location?.state || '/';
+      navigate(redirectPath);
+      localStorage.setItem('access_token', JSON.stringify(data?.access_token));
+      localStorage.setItem('refresh_token', JSON.stringify(data?.refresh_token));
       if (data?.access_token) {
-        const decoded = jwtDecode(data?.access_token)
+        const decoded = jwtDecode(data?.access_token);
         if (decoded?.id) {
-          handleGetDetailsUser(decoded?.id, data?.access_token)
+          handleGetDetailsUser(decoded?.id, data?.access_token);
         }
       }
     }
-  }, [isSuccess])
+  
+    if (isError) {
+      const errorMessage = error?.response?.data?.message || 'An error occurred. Please try again.';
+      message.error(errorMessage);
+    }
+  }, [isSuccess, isError, error]);
+  
 
   const handleGetDetailsUser = async (id, token) => {
-    const storage = localStorage.getItem('refresh_token')
-    const refreshToken = JSON.parse(storage)
-    const res = await UserService.getDetailsUser(id, token)
-    dispatch(updateUser({ ...res?.data, access_token: token,refreshToken }))
-  }
-
+    const refreshToken = JSON.parse(localStorage.getItem('refresh_token'));
+    const res = await UserService.getDetailsUser(id, token);
+    dispatch(updateUser({ ...res?.data, access_token: token, refreshToken }));
+  };
 
   const handleNavigateSignUp = () => {
-    navigate('/sign-up')
-  }
+    navigate('/sign-up');
+  };
 
-  const handleOnchangeEmail = (value) => {
-    setEmail(value)
-  }
+  const handleOnChangeEmail = (value) => {
+    setEmail(value);
+  };
 
-  const handleOnchangePassword = (value) => {
-    setPassword(value)
-  }
+  const handleOnChangePassword = (value) => {
+    setPassword(value);
+  };
 
   const handleSignIn = () => {
-    console.log('logingloin')
-    mutation.mutate({
-      email,
-      password
-    })
-  }
+    setErrorMessage('');
+    mutation.mutate({ email, password });
+  };
 
   return (
     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(0, 0, 0, 0.53)', height: '100vh' }}>
       <div style={{ width: '800px', height: '445px', borderRadius: '6px', background: '#fff', display: 'flex' }}>
         <WrapperContainerLeft>
           <h1>Xin chào</h1>
-          <p>Đăng nhập vào tạo tài khoản</p>
-          <InputForm style={{ marginBottom: '10px' }} placeholder="abc@gmail.com" value={email} onChange={handleOnchangeEmail} />
+          <p>Đăng nhập để tạo tài khoản</p>
+          <InputForm
+            style={{ marginBottom: '10px' }}
+            placeholder="abc@gmail.com"
+            value={email}
+            onChange={handleOnChangeEmail}
+          />
           <div style={{ position: 'relative' }}>
             <span
-              onClick={() => setIsShowPassword(!isShowPassword)}
-              style={{
-                zIndex: 10,
-                position: 'absolute',
-                top: '4px',
-                right: '8px'
-              }}
-            >{
-                isShowPassword ? (
-                  <EyeFilled />
-                ) : (
-                  <EyeInvisibleFilled />
-                )
-              }
+              onClick={() => setIsShowPassword(prev => !prev)}
+              style={{ zIndex: 10, position: 'absolute', top: '4px', right: '8px' }}
+            >
+              {isShowPassword ? <EyeFilled /> : <EyeInvisibleFilled />}
             </span>
             <InputForm
-              placeholder="password"
-              type={isShowPassword ? "text" : "password"}
+              placeholder="Password"
+              type={isShowPassword ? 'text' : 'password'}
               value={password}
-              onChange={handleOnchangePassword}
+              onChange={handleOnChangePassword}
             />
           </div>
-          {data?.status === 'ERR' && <span style={{ color: 'red' }}>{data?.message}</span>}
+          {errorMessage && <span style={{ color: 'red' }}>{error?.response?.data?.message}</span>}  
           <Loading isLoading={isLoading}>
             <ButtonComponent
-              disabled={!email.length || !password.length}
+              disabled={!email || !password}
               onClick={handleSignIn}
               size={40}
               styleButton={{
@@ -120,20 +111,22 @@ const SignInPage = () => {
                 borderRadius: '4px',
                 margin: '26px 0 10px'
               }}
-              textbutton={'Đăng nhập'}
+              textbutton="Đăng nhập"
               styleTextButton={{ color: '#fff', fontSize: '15px', fontWeight: '700' }}
-            ></ButtonComponent>
+            />
           </Loading>
           <p><WrapperTextLight>Quên mật khẩu?</WrapperTextLight></p>
-          <p>Chưa có tài khoản? <WrapperTextLight onClick={handleNavigateSignUp}> Tạo tài khoản</WrapperTextLight></p>
+          <p>
+            Chưa có tài khoản? <WrapperTextLight onClick={handleNavigateSignUp}>Tạo tài khoản</WrapperTextLight>
+          </p>
         </WrapperContainerLeft>
         <WrapperContainerRight>
-          <Image src={imageLogo} preview={false} alt="iamge-logo" height="203px" width="203px" />
+          <Image src={imageLogo} preview={false} alt="image-logo" height="203px" width="203px" />
           <h4>Mua sắm tại LTTD</h4>
         </WrapperContainerRight>
       </div>
-    </div >
-  )
-}
+    </div>
+  );
+};
 
-export default SignInPage
+export default SignInPage;
