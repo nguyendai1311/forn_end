@@ -100,3 +100,4 @@ export const deleteManyUser = async (data, access_token) => {
     })
     return res.data
 }
+

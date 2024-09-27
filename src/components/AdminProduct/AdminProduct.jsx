@@ -284,9 +284,9 @@ const AdminProduct = () => {
       },
     },
     {
-      title: 'Rating',
-      dataIndex: 'rating',
-      sorter: (a, b) => a.rating - b.rating,
+      title: 'Count in Stock',
+      dataIndex: 'countInStock',
+      sorter: (a, b) => a.countInStock - b.countInStock,
       filters: [
         {
           text: '>= 3',
@@ -299,9 +299,9 @@ const AdminProduct = () => {
       ],
       onFilter: (value, record) => {
         if (value === '>=') {
-          return Number(record.rating) >= 3
+          return Number(record.countInStock) >= 3
         }
-        return Number(record.rating) <= 3
+        return Number(record.countInStock) <= 3
       },
     },
     {

@@ -17,14 +17,20 @@ const ProfilePage = () => {
     const [email, setEmail] = useState('')
     const [name, setName] = useState('')
     const [phone, setPhone] = useState('')
-    const [address, setAddress] = useState('')
+    const [street, setStreet] = useState('') // Street number
+    const [ward, setWard] = useState('')
+    const [district, setDistrict] = useState('')
+    const [province, setProvince] = useState('')
     const [avatar, setAvatar] = useState('')
-    const [provinces, setProvinces] = useState([]) // Provinces state
-    const [districts, setDistricts] = useState([]) // Districts state
-    const [wards, setWards] = useState([]) // Wards state
-    const [selectedProvince, setSelectedProvince] = useState('') // Selected province
-    const [selectedDistrict, setSelectedDistrict] = useState('') // Selected district
-    const [selectedWard, setSelectedWard] = useState('') // Selected ward
+    const [provinces, setProvinces] = useState([])
+    const [districts, setDistricts] = useState([])
+    const [wards, setWards] = useState([])
+    const [selectedProvince, setSelectedProvince] = useState('')
+    const [selectedDistrict, setSelectedDistrict] = useState('')
+    const [selectedWard, setSelectedWard] = useState('')
+    const [provinceName, setProvinceName] = useState('')
+    const [districtName, setDistrictName] = useState('')
+    const [wardName, setWardName] = useState('')
 
     const mutation = useMutationHooks(
         (data) => {
@@ -34,9 +40,8 @@ const ProfilePage = () => {
     )
 
     const dispatch = useDispatch()
-    const { data, isLoading, isSuccess, isError } = mutation
+    const { isLoading, isSuccess, isError } = mutation
 
-    // Fetch provinces from the API
     useEffect(() => {
         const fetchProvinces = async () => {
             try {
@@ -50,7 +55,6 @@ const ProfilePage = () => {
         fetchProvinces()
     }, [])
 
-    // Fetch districts based on selected province
     useEffect(() => {
         if (selectedProvince) {
             const fetchDistricts = async () => {
@@ -58,6 +62,7 @@ const ProfilePage = () => {
                     const response = await fetch(`https://provinces.open-api.vn/api/p/${selectedProvince}?depth=2`)
                     const data = await response.json()
                     setDistricts(data.districts)
+                    setProvinceName(data.name) // Store province name
                 } catch (error) {
                     console.error('Error fetching districts:', error)
                 }
@@ -66,7 +71,6 @@ const ProfilePage = () => {
         }
     }, [selectedProvince])
 
-    // Fetch wards based on selected district
     useEffect(() => {
         if (selectedDistrict) {
             const fetchWards = async () => {
@@ -74,6 +78,7 @@ const ProfilePage = () => {
                     const response = await fetch(`https://provinces.open-api.vn/api/d/${selectedDistrict}?depth=2`)
                     const data = await response.json()
                     setWards(data.wards)
+                    setDistrictName(data.name) // Store district name
                 } catch (error) {
                     console.error('Error fetching wards:', error)
                 }
@@ -83,11 +88,39 @@ const ProfilePage = () => {
     }, [selectedDistrict])
 
     useEffect(() => {
+        if (selectedWard) {
+            const fetchWardName = async () => {
+                try {
+                    const response = await fetch(`https://provinces.open-api.vn/api/w/${selectedWard}`)
+                    const data = await response.json()
+                    setWardName(data.name) // Store ward name
+                } catch (error) {
+                    console.error('Error fetching ward name:', error)
+                }
+            }
+            fetchWardName()
+        }
+    }, [selectedWard])
+
+    useEffect(() => {
         setEmail(user?.email)
         setName(user?.name)
         setPhone(user?.phone)
-        setAddress(user?.address)
         setAvatar(user?.avatar)
+
+        // Extract address components if they exist
+        if (user?.address) {
+            const addressParts = user.address.split(', ')
+            if (addressParts.length >= 4) {
+                setWard(addressParts[0])
+                setStreet(addressParts[1])
+                setDistrict(addressParts[2])
+                setProvince(addressParts[3])
+                setSelectedProvince(addressParts[3]) // Set the selected province
+                setSelectedDistrict(addressParts[2]) // Set the selected district
+                setSelectedWard(addressParts[0]) // Set the selected ward
+            }
+        }
     }, [user])
 
     useEffect(() => {
@@ -113,8 +146,20 @@ const ProfilePage = () => {
     const handleOnchangePhone = (value) => {
         setPhone(value)
     }
-    const handleOnchangeAddress = (value) => {
-        setAddress(value)
+    const handleOnchangeStreet = (value) => {
+        setStreet(value)
+    }
+    const handleOnchangeWard = (value) => {
+        setWard(value)
+        setSelectedWard(value) // Ensure selectedWard is updated
+    }
+    const handleOnchangeDistrict = (value) => {
+        setDistrict(value)
+        setSelectedDistrict(value) // Ensure selectedDistrict is updated
+    }
+    const handleOnchangeProvince = (value) => {
+        setProvince(value)
+        setSelectedProvince(value) // Ensure selectedProvince is updated
     }
 
     const handleOnchangeAvatar = async ({ fileList }) => {
@@ -126,9 +171,17 @@ const ProfilePage = () => {
     }
 
     const handleUpdate = () => {
-        const fullAddress = `${selectedProvince} - ${selectedDistrict} - ${selectedWard}`
-        setAddress(fullAddress)
-        mutation.mutate({ id: user?.id, email, name, phone, address: fullAddress, avatar, access_token: user?.access_token })
+        const fullAddress = [street,wardName, districtName, provinceName].filter(Boolean).join(', ') // Combine address components and trim
+        console.log('Updated Address:', fullAddress)
+        mutation.mutate({
+            id: user?.id,
+            email,
+            name,
+            phone,
+            address: fullAddress,
+            avatar,
+            access_token: user?.access_token,
+        });
     }
 
     return (
@@ -138,51 +191,17 @@ const ProfilePage = () => {
                 <WrapperContentProfile>
                     <WrapperInput>
                         <WrapperLabel htmlFor="name">Name</WrapperLabel>
-                        <InputForm style={{ width: '300px' }} id="name" value={name} onChange={handleOnchangeName} />
-                        <ButtonComponent
-                            onClick={handleUpdate}
-                            size={40}
-                            styleButton={{
-                                height: '30px',
-                                width: 'fit-content',
-                                borderRadius: '4px',
-                                padding: '2px 6px 6px',
-                            }}
-                            textbutton={'Cập nhật'}
-                            styleTextButton={{ color: 'rgb(26, 148, 255)', fontSize: '15px', fontWeight: '700' }}
-                        ></ButtonComponent>
+                        <InputForm style={{ width: '300px' }} id="name" value={name} onChange={(value) => handleOnchangeName(value)} />
                     </WrapperInput>
                     <WrapperInput>
                         <WrapperLabel htmlFor="email">Email</WrapperLabel>
-                        <InputForm style={{ width: '300px' }} id="email" value={email} onChange={handleOnchangeEmail} />
-                        <ButtonComponent
-                            onClick={handleUpdate}
-                            size={40}
-                            styleButton={{
-                                height: '30px',
-                                width: 'fit-content',
-                                borderRadius: '4px',
-                                padding: '2px 6px 6px',
-                            }}
-                            textbutton={'Cập nhật'}
-                            styleTextButton={{ color: 'rgb(26, 148, 255)', fontSize: '15px', fontWeight: '700' }}
-                        ></ButtonComponent>
+                        <InputForm style={{ width: '300px' }} id="email" value={email} onChange={(value) => handleOnchangeEmail(value)} />
+
                     </WrapperInput>
                     <WrapperInput>
                         <WrapperLabel htmlFor="phone">Phone</WrapperLabel>
-                        <InputForm style={{ width: '300px' }} id="email" value={phone} onChange={handleOnchangePhone} />
-                        <ButtonComponent
-                            onClick={handleUpdate}
-                            size={40}
-                            styleButton={{
-                                height: '30px',
-                                width: 'fit-content',
-                                borderRadius: '4px',
-                                padding: '2px 6px 6px',
-                            }}
-                            textbutton={'Cập nhật'}
-                            styleTextButton={{ color: 'rgb(26, 148, 255)', fontSize: '15px', fontWeight: '700' }}
-                        ></ButtonComponent>
+                        <InputForm style={{ width: '300px' }} id="phone" value={phone} onChange={(value) => handleOnchangePhone(value)} />
+
                     </WrapperInput>
                     <WrapperInput>
                         <WrapperLabel htmlFor="avatar">Avatar</WrapperLabel>
@@ -201,25 +220,18 @@ const ProfilePage = () => {
                                 alt="avatar"
                             />
                         )}
-                        <ButtonComponent
-                            onClick={handleUpdate}
-                            size={40}
-                            styleButton={{
-                                height: '30px',
-                                width: 'fit-content',
-                                borderRadius: '4px',
-                                padding: '2px 6px 6px',
-                            }}
-                            textbutton={'Cập nhật'}
-                            styleTextButton={{ color: 'rgb(26, 148, 255)', fontSize: '15px', fontWeight: '700' }}
-                        ></ButtonComponent>
+
+                    </WrapperInput>
+                    <WrapperInput>
+                        <WrapperLabel htmlFor="street">Street</WrapperLabel>
+                        <InputForm style={{ width: '300px' }} id="street" value={street} onChange={(value) => handleOnchangeStreet(value)} />
                     </WrapperInput>
                     <WrapperInput>
                         <WrapperLabel htmlFor="province">Province</WrapperLabel>
-                        <select id="province" value={selectedProvince} onChange={(e) => setSelectedProvince(e.target.value)}>
+                        <select id="province" value={selectedProvince} onChange={(e) => handleOnchangeProvince(e.target.value)}>
                             <option value="">Select Province</option>
                             {provinces.map((province) => (
-                                <option key={province.code} value={province.name}> {/* Use name for concatenation */}
+                                <option key={province.code} value={province.code}>
                                     {province.name}
                                 </option>
                             ))}
@@ -227,10 +239,10 @@ const ProfilePage = () => {
                     </WrapperInput>
                     <WrapperInput>
                         <WrapperLabel htmlFor="district">District</WrapperLabel>
-                        <select id="district" value={selectedDistrict} onChange={(e) => setSelectedDistrict(e.target.value)}>
+                        <select id="district" value={selectedDistrict} onChange={(e) => handleOnchangeDistrict(e.target.value)}>
                             <option value="">Select District</option>
                             {districts.map((district) => (
-                                <option key={district.code} value={district.name}> {/* Use name for concatenation */}
+                                <option key={district.code} value={district.code}>
                                     {district.name}
                                 </option>
                             ))}
@@ -238,15 +250,27 @@ const ProfilePage = () => {
                     </WrapperInput>
                     <WrapperInput>
                         <WrapperLabel htmlFor="ward">Ward</WrapperLabel>
-                        <select id="ward" value={selectedWard} onChange={(e) => setSelectedWard(e.target.value)}>
+                        <select id="ward" value={selectedWard} onChange={(e) => handleOnchangeWard(e.target.value)}>
                             <option value="">Select Ward</option>
                             {wards.map((ward) => (
-                                <option key={ward.code} value={ward.name}> {/* Use name for concatenation */}
+                                <option key={ward.code} value={ward.code}>
                                     {ward.name}
                                 </option>
                             ))}
                         </select>
                     </WrapperInput>
+                    <ButtonComponent
+                        onClick={handleUpdate}
+                        size={40}
+                        styleButton={{
+                            height: '30px',
+                            width: 'fit-content',
+                            borderRadius: '4px',
+                            padding: '2px 6px 6px',
+                        }}
+                        textbutton={'Cập nhật'}
+                        styleTextButton={{ color: 'rgb(26, 148, 255)', fontSize: '15px', fontWeight: '700' }}
+                    ></ButtonComponent>
                 </WrapperContentProfile>
             </Loading>
         </div>
@@ -254,3 +278,7 @@ const ProfilePage = () => {
 }
 
 export default ProfilePage
+
+
+
+

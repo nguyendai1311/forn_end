@@ -26,12 +26,6 @@ export const WrapperLabel = styled.label`
     text-align: left;
 `
 
-export const WrapperInput = styled.div`
-    display: flex;
-    align-items: cemter;
-    gap: 20px;
-`
-
 export const WrapperUploadFile = styled(Upload)`
     & .ant-upload.ant-upload-select.ant-upload-select-picture-card {
         width: 60px;
@@ -41,4 +35,18 @@ export const WrapperUploadFile = styled(Upload)`
     & .ant-upload-list-item-info {
         display: none
     }
+`
+
+export const WrapperInput = styled.div`
+    display: flex;
+    align-items: center;
+    gap: 20px;
+`
+
+export const WrapperButton = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center; 
+    justify-content: center; 
+    margin: 10px 0; 
 `

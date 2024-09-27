@@ -14,13 +14,23 @@ export const createOrder = async (data,access_token) => {
   return res.data
 }
 
-export const getOrderByUserId = async (id,access_token) => {
-  const res = await axiosJWT.get(`${process.env.REACT_APP_API_URL}/order/get-all-order/${id}`, {
-      headers: {
-          token: `Bearer ${access_token}`,
-      }
-  })
-  return res.data
+export const getOrderByUserId = async (id, access_token) => {
+  if (!id) {
+      console.error("Invalid user ID:", id);
+      return; // Or throw an error, or return a specific value
+  }
+
+  try {
+      const res = await axiosJWT.get(`${process.env.REACT_APP_API_URL}/order/get-all-order/${id}`, {
+          headers: {
+              token: `Bearer ${access_token}`,
+          }
+      });
+      return res.data;
+  } catch (error) {
+      console.error("Error fetching orders:", error);
+      throw error; // Rethrow or handle the error as needed
+  }
 }
 
 export const getDetailsOrder = async (id,access_token) => {

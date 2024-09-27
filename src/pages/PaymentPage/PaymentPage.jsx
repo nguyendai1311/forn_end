@@ -16,7 +16,7 @@ import * as message from '../../components/Message/Message'
 import { updateUser } from '../../redux/slides/userSlide';
 import { useNavigate } from 'react-router-dom';
 import { removeAllOrderProduct } from '../../redux/slides/orderSlide';
-// import { PayPalButton } from "react-paypal-button-v2";
+import { PayPalButton } from "react-paypal-button-v2";
 import * as PaymentService from '../../services/PaymentService'
 
 const PaymentPage = () => {
@@ -93,8 +93,7 @@ const PaymentPage = () => {
 
   const handleAddOrder = () => {
     if(user?.access_token && order?.orderItemsSlected && user?.name
-      && user?.address && user?.phone && user?.city && priceMemo && user?.id) {
-        // eslint-disable-next-line no-unused-expressions
+      && user?.address && user?.phone  && priceMemo && user?.id) {
         mutationAddOrder.mutate(
           { 
             token: user?.access_token, 
@@ -102,7 +101,6 @@ const PaymentPage = () => {
             fullName: user?.name,
             address:user?.address, 
             phone:user?.phone,
-            city: user?.city,
             paymentMethod: payment,
             itemsPrice: priceMemo,
             shippingPrice: diliveryPriceMemo,
@@ -297,18 +295,19 @@ const PaymentPage = () => {
                   </span>
                 </WrapperTotal>
               </div>
-              {payment === 'paypal' && sdkReady ? (
-                <div style={{width: '320px'}}>
-                  {/* <PayPalButton
+               {payment === 'paypal' && sdkReady ? (
+                <div style={{width: '320px'}}> 
+                    <PayPalButton
                     amount={Math.round(totalPriceMemo / 30000)}
                     // shippingPreference="NO_SHIPPING" // default is "GET_FROM_FILE"
                     onSuccess={onSuccessPaypal}
                     onError={() => {
-                      alert('Erroe')
+                      alert('Error')
                     }}
-                  /> */}
+                  />
                 </div>
-              ) : (
+               ) : ( 
+
                 <ButtonComponent
                   onClick={() => handleAddOrder()}
                   size={40}
@@ -316,13 +315,13 @@ const PaymentPage = () => {
                       background: 'rgb(255, 57, 69)',
                       height: '48px',
                       width: '320px',
-                      border: 'none',
+                      border: 'none', 
                       borderRadius: '4px'
                   }}
                   textbutton={'Đặt hàng'}
                   styleTextButton={{ color: '#fff', fontSize: '15px', fontWeight: '700' }}
               ></ButtonComponent>
-              )}
+                )} 
             </WrapperRight>
           </div>
         </div>
@@ -342,13 +341,6 @@ const PaymentPage = () => {
                 rules={[{ required: true, message: 'Please input your name!' }]}
               >
                 <InputComponent value={stateUserDetails['name']} onChange={handleOnchangeDetails} name="name" />
-              </Form.Item>
-              <Form.Item
-                label="City"
-                name="city"
-                rules={[{ required: true, message: 'Please input your city!' }]}
-              >
-                <InputComponent value={stateUserDetails['city']} onChange={handleOnchangeDetails} name="city" />
               </Form.Item>
               <Form.Item
                 label="Phone"
@@ -374,3 +366,4 @@ const PaymentPage = () => {
 }
 
 export default PaymentPage
+

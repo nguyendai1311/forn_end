@@ -54,6 +54,7 @@ export const WrapperAddressProduct = styled.div`
         font-size: 16px;
         line-height: 24px;
         font-weight: 500;
+        cursor: pointer;
     }
 `
 
