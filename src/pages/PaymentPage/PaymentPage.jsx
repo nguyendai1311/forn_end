@@ -16,7 +16,6 @@ import * as message from '../../components/Message/Message'
 import { updateUser } from '../../redux/slides/userSlide';
 import { useNavigate } from 'react-router-dom';
 import { removeAllOrderProduct } from '../../redux/slides/orderSlide';
-import { PayPalButton } from "react-paypal-button-v2";
 import * as PaymentService from '../../services/PaymentService'
 
 const PaymentPage = () => {
@@ -297,14 +296,14 @@ const PaymentPage = () => {
               </div>
                {payment === 'paypal' && sdkReady ? (
                 <div style={{width: '320px'}}> 
-                    <PayPalButton
+                    {/* <PayPalButton
                     amount={Math.round(totalPriceMemo / 30000)}
                     // shippingPreference="NO_SHIPPING" // default is "GET_FROM_FILE"
                     onSuccess={onSuccessPaypal}
                     onError={() => {
                       alert('Error')
                     }}
-                  />
+                  /> */}
                 </div>
                ) : ( 
 
