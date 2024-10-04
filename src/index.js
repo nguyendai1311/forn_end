@@ -12,6 +12,7 @@ import { PersistGate } from 'redux-persist/integration/react'
 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
+<script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js"></script>
 
 const queryClient = new QueryClient()
 root.render(

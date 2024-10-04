@@ -100,7 +100,7 @@ const SignUpPage = () => {
       <div style={{ width: '800px', height: '445px', borderRadius: '6px', background: '#fff', display: 'flex' }}>
         <WrapperContainerLeft>
           <h1>Xin chào</h1>
-          <p>Đăng nhập vào tạo tài khoản</p>
+          <p>Tạo tài khoản</p>
           <InputForm
             style={{ marginBottom: '10px' }}
             placeholder="abc@gmail.com"

@@ -171,7 +171,7 @@ const ProfilePage = () => {
     }
 
     const handleUpdate = () => {
-        const fullAddress = [street,wardName, districtName, provinceName].filter(Boolean).join(', ') // Combine address components and trim
+        const fullAddress = [street, wardName, districtName, provinceName].filter(Boolean).join(', ') // Combine address components and trim
         console.log('Updated Address:', fullAddress)
         mutation.mutate({
             id: user?.id,
@@ -193,11 +193,11 @@ const ProfilePage = () => {
                         <WrapperLabel htmlFor="name">Name</WrapperLabel>
                         <InputForm style={{ width: '300px' }} id="name" value={name} onChange={(value) => handleOnchangeName(value)} />
                     </WrapperInput>
-                    <WrapperInput>
+                    {/* <WrapperInput>
                         <WrapperLabel htmlFor="email">Email</WrapperLabel>
                         <InputForm style={{ width: '300px' }} id="email" value={email} onChange={(value) => handleOnchangeEmail(value)} />
 
-                    </WrapperInput>
+                    </WrapperInput> */}
                     <WrapperInput>
                         <WrapperLabel htmlFor="phone">Phone</WrapperLabel>
                         <InputForm style={{ width: '300px' }} id="phone" value={phone} onChange={(value) => handleOnchangePhone(value)} />
@@ -263,10 +263,13 @@ const ProfilePage = () => {
                         onClick={handleUpdate}
                         size={40}
                         styleButton={{
+                            display: 'block',
                             height: '30px',
                             width: 'fit-content',
                             borderRadius: '4px',
                             padding: '2px 6px 6px',
+                            marginLeft: 'auto',
+                            marginRight: 'auto',
                         }}
                         textbutton={'Cập nhật'}
                         styleTextButton={{ color: 'rgb(26, 148, 255)', fontSize: '15px', fontWeight: '700' }}

@@ -129,6 +129,8 @@ import Loading from '../../components/LoadingComponent/Loading';
 import { useDebounce } from '../../hooks/useDebounce';
 import { Pagination } from 'antd';
 import { useLocation } from 'react-router-dom';
+import MessengerComponent from '../../components/MessengerComponent/MessengerComponent';
+
 
 const HomePage = () => {
   const dispatch = useDispatch();
@@ -226,6 +228,7 @@ const HomePage = () => {
             style={{ textAlign: 'center', marginTop: '10px' }}
           />
         </div>
+        <MessengerComponent/>
       </div>
     </Loading>
   );
