@@ -1,0 +1,39 @@
+.best-selling-products {
+    padding: 20px;
+    background-color: #ffffff; /* Màu nền trắng */
+    border-radius: 8px; /* Bo góc */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Đổ bóng nhẹ */
+    cursor: pointer;
+  }
+  
+  .product-list {
+    display: flex;
+    flex-wrap: wrap; /* Để sản phẩm xuống dòng khi không đủ chỗ */
+    gap: 16px; /* Khoảng cách giữa các sản phẩm */
+    justify-content: space-between; /* Căn chỉnh sản phẩm đều nhau */
+  }
+  
+  .product-card {
+    background-color: #f9f9f9; /* Màu nền cho sản phẩm */
+    border: 1px solid #e0e0e0; /* Đường viền */
+    border-radius: 8px; /* Bo góc */
+    padding: 10px;
+    text-align: center; /* Căn giữa nội dung */
+    width: calc(16.66% - 16px); /* Để có 6 sản phẩm trên 1 hàng */
+    box-sizing: border-box; /* Để padding không tính vào chiều rộng */
+  }
+  
+  .product-card img {
+    max-width: 100%; /* Đảm bảo hình ảnh không vượt quá chiều rộng */
+    border-radius: 8px; /* Bo góc cho hình ảnh */
+  }
+  
+  .product-card h3 {
+    font-size: 14px; /* Kích thước chữ tiêu đề */
+    margin: 10px 0 5px; /* Khoảng cách giữa tiêu đề và số đã bán */
+  }
+  
+  .product-card p {
+    font-size: 12px; /* Kích thước chữ cho số lượng đã bán */
+    color: #999; /* Màu chữ nhạt hơn */
+  }

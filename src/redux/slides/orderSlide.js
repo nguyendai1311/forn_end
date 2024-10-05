@@ -23,18 +23,27 @@ export const orderSlide = createSlice({
   initialState,
   reducers: {
     addOrderProduct: (state, action) => {
-      const {orderItem} = action.payload
-      const itemOrder = state?.orderItems?.find((item) => item?.product === orderItem.product)
-      if(itemOrder){
-        if(itemOrder.amount <= itemOrder.countInstock) {
-          itemOrder.amount += orderItem?.amount
-          state.isSucessOrder = true
-          state.isErrorOrder = false
-        }
-      }else {
-        state.orderItems.push(orderItem)
+      const { orderItem } = action.payload;
+      const itemOrder = state?.orderItems?.find((item) => item?.product === orderItem.product);
+      
+      if (itemOrder) {
+          if (itemOrder.amount + orderItem.amount <= itemOrder.countInstock) {
+              itemOrder.amount += orderItem.amount;
+              state.isSucessOrder = true;
+              state.isErrorOrder = false;
+          } else {
+              state.isErrorOrder = true;
+          }
+      } else {
+          state.orderItems.push({
+              ...orderItem,
+              timeAdded: Date.now(),
+          });
+          state.isSucessOrder = true;
+          state.isErrorOrder = false;
       }
-    },
+  },
+  
     resetOrder: (state) => {
       state.isSucessOrder = false
     },

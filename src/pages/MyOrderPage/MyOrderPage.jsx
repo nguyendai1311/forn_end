@@ -435,7 +435,7 @@ const MyOrderPage = () => {
               rules={[{ required: true, message: 'Please input your name!' }]}
             >
               <InputComponent value={stateUserDetails['name']} onChange={handleOnchangeDetails} name="name" />
-            </Form.Item>
+            </Form.Item> 
             <WrapperInput>
               <WrapperLabel htmlFor="street">Street</WrapperLabel>
               <InputForm style={{ width: '300px' }} id="street" value={street} onChange={(value) => handleOnchangeStreet(value)} />
@@ -473,13 +473,6 @@ const MyOrderPage = () => {
                 ))}
               </select>
             </WrapperInput>
-            {/* <Form.Item
-              label="City"
-              name="city"
-              rules={[{ required: true, message: 'Please input your city!' }]}
-            >
-              <InputComponent value={stateUserDetails['city']} onChange={handleOnchangeDetails} name="city" />
-            </Form.Item>
             <Form.Item
               label="Phone"
               name="phone"
@@ -487,14 +480,6 @@ const MyOrderPage = () => {
             >
               <InputComponent value={stateUserDetails.phone} onChange={handleOnchangeDetails} name="phone" />
             </Form.Item>
-
-            <Form.Item
-              label="Adress"
-              name="address"
-              rules={[{ required: true, message: 'Please input your  address!' }]}
-            >
-              <InputComponent value={stateUserDetails.address} onChange={handleOnchangeDetails} name="address" />
-            </Form.Item> */}
           </Form>
         </Loading>
       </ModalComponent>

@@ -383,6 +383,39 @@ const OrderPage = () => {
   const [form] = Form.useForm();
 
   const dispatch = useDispatch()
+  const [timeRemaining, setTimeRemaining] = useState({}); 
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+        const currentTime = Date.now();
+        const updatedTimes = {};
+
+        order?.orderItems?.forEach((item) => {
+          const currentTime = Date.now(); 
+          const timeAdded = item.timeAdded ;
+          const timeElapsed = currentTime - timeAdded;
+          const remainingTime = 600000 - timeElapsed; 
+      
+          if (remainingTime <= 0) {
+              dispatch(removeOrderProduct({ idProduct: item.product }));
+          } else {
+              updatedTimes[item.product] = remainingTime; 
+          }
+      });
+
+        setTimeRemaining(updatedTimes); 
+    }, 1000);
+
+    return () => clearInterval(interval); 
+}, [order, dispatch]);
+
+  const formatTime = (milliseconds) => {
+    const totalSeconds = Math.floor(milliseconds / 1000);
+    const minutes = Math.floor(totalSeconds / 60);
+    const seconds = totalSeconds % 60;
+    return `${minutes} phút ${seconds} giây`;
+  };
+
   const onChange = (e) => {
     if(listChecked.includes(e.target.value)){
       const newListChecked = listChecked.filter((item) => item !== e.target.value)
@@ -583,7 +616,9 @@ const OrderPage = () => {
                     overflow: 'hidden',
                     textOverflow:'ellipsis',
                     whiteSpace:'nowrap'
-                  }}>{order?.name}</div>
+                  }}>{order?.name}
+                  <p>Thời gian còn lại: {formatTime(timeRemaining[order.product] || 600000)}</p>
+                  </div>
                 </div>
                 <div style={{flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
                   <span>

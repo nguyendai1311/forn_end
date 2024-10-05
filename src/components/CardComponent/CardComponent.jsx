@@ -18,7 +18,7 @@ const CardComponent = (props) => {
             style={{ width: 200 }}
             bodyStyle={{ padding: '10px' }}
             cover={<img alt="example" src={image} />}
-            onClick={() =>  handleDetailsProduct(id)}
+            onClick={() => handleDetailsProduct(id)}
         >
             <img
                 src={logo}
@@ -44,6 +44,9 @@ const CardComponent = (props) => {
                     - {discount || 5} %
                 </WrapperDiscountText>
             </WrapperPriceText>
+            <WrapperStyleTextSell>
+            Số lượng trong kho {countInStock}
+            </WrapperStyleTextSell>
         </WrapperCardStyle>
     )
 }

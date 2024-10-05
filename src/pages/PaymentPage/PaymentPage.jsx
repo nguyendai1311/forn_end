@@ -105,11 +105,14 @@ const PaymentPage = () => {
             shippingPrice: diliveryPriceMemo,
             totalPrice: totalPriceMemo,
             user: user?.id,
-            email: user?.email
+            email: user?.email,
+            timeAdded: new Date()
           }
         )
       }
   }
+
+  
   
   const mutationUpdate = useMutationHooks(
     (data) => {
@@ -365,4 +368,5 @@ const PaymentPage = () => {
 }
 
 export default PaymentPage
+
 

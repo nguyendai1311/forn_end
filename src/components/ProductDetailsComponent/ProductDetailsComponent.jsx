@@ -84,11 +84,37 @@ const ProductDetailsComponent = ({ idProduct }) => {
    const handleNavigateProfile = () => {
     navigate('/profile-user')
    }
+
+    // const handleAddOrderProduct = () => {
+    //     if (!user?.id) {
+    //         navigate('/sign-in', { state: location?.pathname });
+    //     } else {
+    //         const orderRedux = order?.orderItems?.find((item) => item.product === productDetails?._id);
+    //         if ((orderRedux?.amount + numProduct) <= orderRedux?.countInstock || (!orderRedux && productDetails?.countInStock > 0)) {
+    //             dispatch(addOrderProduct({
+    //                 orderItem: {
+    //                     name: productDetails?.name,
+    //                     amount: numProduct,
+    //                     image: productDetails?.image,
+    //                     price: productDetails?.price,
+    //                     product: productDetails?._id,
+    //                     discount: productDetails?.discount,
+    //                     countInstock: productDetails?.countInStock
+    //                 }
+    //             }));
+    //         } else {
+    //             setErrorLimitOrder(true);
+    //         }
+    //     }
+    // };
+
     const handleAddOrderProduct = () => {
         if (!user?.id) {
             navigate('/sign-in', { state: location?.pathname });
         } else {
             const orderRedux = order?.orderItems?.find((item) => item.product === productDetails?._id);
+            const currentTime = Date.now(); // Lấy thời gian hiện tại
+    
             if ((orderRedux?.amount + numProduct) <= orderRedux?.countInstock || (!orderRedux && productDetails?.countInStock > 0)) {
                 dispatch(addOrderProduct({
                     orderItem: {
@@ -98,7 +124,8 @@ const ProductDetailsComponent = ({ idProduct }) => {
                         price: productDetails?.price,
                         product: productDetails?._id,
                         discount: productDetails?.discount,
-                        countInstock: productDetails?.countInStock
+                        countInstock: productDetails?.countInStock,
+                        timeAdded: currentTime, // Gán giá trị timeAdded
                     }
                 }));
             } else {
@@ -106,6 +133,9 @@ const ProductDetailsComponent = ({ idProduct }) => {
             }
         }
     };
+    
+    
+    
 
     return (
         <Loading isLoading={isLoading}>
