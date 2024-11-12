@@ -383,38 +383,6 @@ const OrderPage = () => {
   const [form] = Form.useForm();
 
   const dispatch = useDispatch()
-  const [timeRemaining, setTimeRemaining] = useState({}); 
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-        const currentTime = Date.now();
-        const updatedTimes = {};
-
-        order?.orderItems?.forEach((item) => {
-          const currentTime = Date.now(); 
-          const timeAdded = item.timeAdded ;
-          const timeElapsed = currentTime - timeAdded;
-          const remainingTime = 600000 - timeElapsed; 
-      
-          if (remainingTime <= 0) {
-              dispatch(removeOrderProduct({ idProduct: item.product }));
-          } else {
-              updatedTimes[item.product] = remainingTime; 
-          }
-      });
-
-        setTimeRemaining(updatedTimes); 
-    }, 1000);
-
-    return () => clearInterval(interval); 
-}, [order, dispatch]);
-
-  const formatTime = (milliseconds) => {
-    const totalSeconds = Math.floor(milliseconds / 1000);
-    const minutes = Math.floor(totalSeconds / 60);
-    const seconds = totalSeconds % 60;
-    return `${minutes} phút ${seconds} giây`;
-  };
 
   const onChange = (e) => {
     if(listChecked.includes(e.target.value)){
@@ -495,7 +463,7 @@ const OrderPage = () => {
   },[order])
 
   const diliveryPriceMemo = useMemo(() => {
-    if(priceMemo >= 20000 && priceMemo < 500000){
+    if(priceMemo >= 200000 && priceMemo < 500000){
       return 10000
     }else if(priceMemo >= 500000 || order?.orderItemsSlected?.length === 0) {
       return 0
@@ -517,7 +485,7 @@ const OrderPage = () => {
   const handleAddCard = () => {
     if(!order?.orderItemsSlected?.length) {
       message.error('Vui lòng chọn sản phẩm')
-    }else if(!user?.phone || !user.address || !user.name || !user.city) {
+    }else if(!user?.phone || !user.address || !user.name ) {
       setIsOpenModalUpdateInfo(true)
     }else {
       navigate('/payment')
@@ -617,7 +585,6 @@ const OrderPage = () => {
                     textOverflow:'ellipsis',
                     whiteSpace:'nowrap'
                   }}>{order?.name}
-                  <p>Thời gian còn lại: {formatTime(timeRemaining[order.product] || 600000)}</p>
                   </div>
                 </div>
                 <div style={{flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>

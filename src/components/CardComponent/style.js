@@ -30,7 +30,7 @@ export const WrapperReportText = styled.div`
 
 export const WrapperPriceText = styled.div`
     color: rgb(255, 66, 78);
-    font-size: 12px;
+    font-size: 14px;
     font-weight: 500;
 `
 
@@ -41,7 +41,7 @@ export const WrapperDiscountText = styled.span`
 `
 
 export const WrapperStyleTextSell = styled.span`
-    font-size: 15px;
+    font-size: 12px;
     line-height: 24px;
     color: rgb(120, 120, 120)
 `
